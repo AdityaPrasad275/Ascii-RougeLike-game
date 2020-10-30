@@ -174,48 +174,64 @@ int level::battleSystem(monster* _monster)
 
 		std::string monsterName = assignNameToMonster(_monster);
 		int playerAttackChance, monsterAttackChance;
+		srand((unsigned)time(NULL));
 
 		while (player1->health > 0 && _monster->health > 0) {
-		
-			srand((unsigned)time(NULL));
+			
 			playerAttackChance = rand() % 100 + 1;
 			
 			cout << "you rolled the dice\n";
-			cout << "your chance of attacking is " << playerAttackChance << endl;
+			cout << "your chance of attacking is " << playerAttackChance << endl << endl;
 
 			if (player1->attackChance <= playerAttackChance) {
 				//player attacks
 				_monster->health = _monster->health - (player1->damage / (_monster->defense % 10 + 1));
 				
-				cout << "you landed a hit !\n";
-				Sleep(10);
+				cout << "you landed a hit !\n\n";
+				Sleep(3000);
+
+				if (_monster->health <= 0) {
+					cout << monsterName << " died !! You won\n";
+					Sleep(3000);
+					return 1;
+				}
 
 				cout << monsterName << " health : " << _monster->health << endl;
-				Sleep(10);
-				cout << "player health : " << player1->health << endl;
+				cout << "player health : " << player1->health << endl << endl;
+				Sleep(3000);
 			}
-			else
-				cout << "you didn't land a hit";
+			else {
+				cout << "you didn't land a hit\n\n";
+				Sleep(3000);
+			}
 
 			monsterAttackChance = rand() % 100 + 1;
 
 			cout << "the " << monsterName << " rolled the dice\n";
-			cout << monsterName << "'s chance of attacking " << monsterAttackChance << endl; 
+			cout << monsterName << "'s chance of attacking " << monsterAttackChance << endl << endl; 
 
 			if (_monster->attackChance <= monsterAttackChance) {
 				//monster attack
 
 				player1->health = player1->health - (_monster->damage / (player1->defense % 10 + 1));
 				
-				cout << monsterName << "landed a hit !\n";
-				Sleep(10);
+				cout << monsterName << "landed a hit !\n\n";
+				Sleep(3000);
+
+				if (player1->health <= 0) {
+					cout << " you died !!\n";
+					Sleep(3000);
+					return 0;
+				}
 
 				cout << monsterName << " health : " << _monster->health << endl;
-				Sleep(10);
-				cout << "player health : " << player1->health << endl;
+				cout << "player health : " << player1->health << endl << endl;
+				Sleep(3000);
 			}
-			else
-				cout << monsterName << " didn't land a hit";
+			else {
+				cout << monsterName << " didn't land a hit\n\n";
+				Sleep(3000);
+			}
 		}
 
 		if (player1->health != 0) {
@@ -229,6 +245,7 @@ int level::battleSystem(monster* _monster)
 	}
 	else return 2;
 }
+
 
 std::string level::assignNameToMonster(monster* _monster)
 {
