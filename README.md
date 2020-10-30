@@ -3,10 +3,10 @@ adventure game made by using ascii characters
 
 there's 
 
-1)a map 
-2)movement functions
-3)dumb ai for monsters 
-4)battle functions that doesn't fully work
+1) a map 
+2) movement functions
+3) dumb ai for monsters 
+4) battle functions that doesn't fully work
 
 till now
 
