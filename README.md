@@ -15,3 +15,4 @@ further goals ->
 1) add an item system
 2) add a currency
 3) add a shop
+4) add leveling up
