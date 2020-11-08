@@ -31,14 +31,14 @@ void level::setupLevel()
 			case 'g':
 			{
 				monster* goblin = new monster;
-				goblin->init(j, i, 50, 30, 50, 70, 'g');
+				goblin->init(j, i, 50, 30, 50, 70, 'g', "goblin");
 				monsterVec.push_back(goblin);
 				break;
 			}
 			case 'd':
 			{
 				monster* dragon = new monster;
-				dragon->init(j, i, 1000, 70, 10, 95, 'd');
+				dragon->init(j, i, 1000, 70, 10, 95, 'd', "dragon");
 				monsterVec.push_back(dragon);
 				break;
 			}
@@ -172,7 +172,7 @@ int level::battleSystem(monster* _monster)
 
 	if (wannaFight) {
 
-		std::string monsterName = assignNameToMonster(_monster);
+		std::string monsterName = _monster->name;
 		int playerAttackChance, monsterAttackChance;
 		srand((unsigned)time(NULL));
 
@@ -246,60 +246,39 @@ int level::battleSystem(monster* _monster)
 	else return 2;
 }
 
+int level::check_if_monster_nearby() {
+	bool isMonsterNearby = false;
+	int monsterId, battleOutCome;
 
-std::string level::assignNameToMonster(monster* _monster)
-{
-	std::string monsterName;
-
-	switch (_monster->symbol)
-	{
-	case 'g':
-		monsterName = "goblin";
-		break;
-	case 'd':
-		monsterName = "dragon";
-		break;
-	default:
-		monsterName = "unidentified monster";
-		break;
+	//checking north south east west
+	for (int i = 0; i < monsterSymbols.size() ; i++) {
+		if (map[player1->xPos + 1][player1->yPos] == monsterSymbols[i] ||
+			map[player1->xPos - 1][player1->yPos] == monsterSymbols[i] ||
+			map[player1->xPos][player1->yPos + 1] == monsterSymbols[i] ||
+			map[player1->xPos][player1->yPos - 1] == monsterSymbols[i]) {
+			isMonsterNearby = true;
+			monsterId = i;
+		}
 	}
 
-	return monsterName;
-}
-
-int level::check_if_monster_nearby()
-{
-	int deltaXpos, deltaYpos, battleOutCome;
-	std::vector<double> distance;
-
-	for (int i = 0; i < monsterVec.size(); i++)
-	{
-		deltaXpos = abs(player1->xPos - monsterVec[i]->xPos);
-		deltaYpos = abs(player1->yPos - monsterVec[i]->yPos);
-
-		distance.push_back( sqrt(pow(deltaXpos, 2) + pow(deltaYpos, 2)) );
-	} 
-
-	for (int i = 0; i < distance.size(); i++)
-	{
-		if (distance[i] <= 1.5) {
-
-			battleOutCome = battleSystem(monsterVec[i]);
-
-			switch (battleOutCome)
-			{
+	if (isMonsterNearby) {
+		
+		battleOutCome = battleSystem(monsterVec[monsterId]);
+		
+		switch (battleOutCome)
+		{
 			case 0:
 				map[player1->yPos][player1->xPos] = '.';
 				return 0;
 				break;
 			case 1:
 			{
-				map[monsterVec[i]->yPos][monsterVec[i]->xPos] = '.';
-				delete monsterVec[i];
-				
-				monsterVec[i] = monsterVec.back();
+				map[monsterVec[monsterId]->yPos][monsterVec[monsterId]->xPos] = '.';
+				delete monsterVec[monsterId];
+						
+				monsterVec[monsterId] = monsterVec.back();
 				monsterVec.pop_back();
-
+		
 				return 1;
 				break;
 			}
@@ -308,9 +287,9 @@ int level::check_if_monster_nearby()
 				break;
 			default:
 				break;
-			}
 		}
 	}
+
 	return 1;
 }
 
@@ -322,11 +301,20 @@ void level::deleteAllHeapVariables()
 	}
 }
 
+void level::listOfMonsterSymbols()
+{
+	for (int i = 0; i < monsterVec.size(); i++)
+	{
+		monsterSymbols.push_back(monsterVec[i]->symbol);
+	}
+}
+
 void level::_management(std::string _levelName)
 {
 	levelName = _levelName;
 	
 	setupLevel();
+	listOfMonsterSymbols();
 
 	bool isDone = false;
 
@@ -353,3 +341,4 @@ void level::_management(std::string _levelName)
 	int a;
 	std::cin >> a;
 }
+
