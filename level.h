@@ -21,8 +21,9 @@ class level
 		int xPos, yPos;
 		int health, damage, attackChance, defense;
 		char symbol;
+		std::string name;
 
-		void init(int _xPos, int _yPos, int _health, int _damage,int _defense, int _attackChance, char _symbol) {
+		void init(int _xPos, int _yPos, int _health, int _damage,int _defense, int _attackChance, char _symbol, std::string _name = "player1") {
 			xPos = _xPos;
 			yPos = _yPos;
 			health = _health;
@@ -30,6 +31,7 @@ class level
 			defense = _defense;
 			attackChance = _attackChance;
 			symbol = _symbol;
+			name = _name;
 		}
 	};
 
