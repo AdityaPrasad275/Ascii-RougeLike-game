@@ -25,20 +25,20 @@ void level::setupLevel()
 			{
 			case '@':
 			{
-				player1->init(j, i, 100, 20, 30, 30, '@');
+				player1->init(j, i, 100, 20, 30, 50, '@');
 				break;
 			}
 			case 'g':
 			{
 				monster* goblin = new monster;
-				goblin->init(j, i, 50, 30, 50, 70, 'g', "goblin");
+				goblin->init(j, i, 50, 30, 50, 30, 'g', "goblin");
 				monsterVec.push_back(goblin);
 				break;
 			}
 			case 'd':
 			{
 				monster* dragon = new monster;
-				dragon->init(j, i, 1000, 70, 10, 95, 'd', "dragon");
+				dragon->init(j, i, 1000, 70, 10, 70, 'd', "dragon");
 				monsterVec.push_back(dragon);
 				break;
 			}
