@@ -248,45 +248,41 @@ int level::battleSystem(monster* _monster)
 
 int level::check_if_monster_nearby()
 {
-	int deltaXpos, deltaYpos, battleOutCome;
-	std::vector<double> distance;
+	bool isMonsterNearby = false;
 
-	for (int i = 0; i < monsterVec.size(); i++)
+	char tile[4] = { map[player1->xPos][player1->yPos - 1], map[player1->xPos][player1->yPos + 1], map[player1->xPos - 1][player1->yPos],map[player1->xPos + 1][player1->yPos] };
+	//tile = { north, south, west, east }
+
+	for (int i = 0; i < 4; i++)
 	{
-		deltaXpos = abs(player1->xPos - monsterVec[i]->xPos);
-		deltaYpos = abs(player1->yPos - monsterVec[i]->yPos);
+		for (int j = 0; j < monsterSymbols.size(); j++)
+		{
+			if (tile[i] == monsterSymbols[j]) {
 
-		distance.push_back( sqrt(pow(deltaXpos, 2) + pow(deltaYpos, 2)) );
-	} 
+				switch (battleSystem(monsterVec[j]))
+				{
+				case 0:
+					map[player1->yPos][player1->xPos] = '.';
+					return 0;
+					break;
+				case 1:
+				{
+					map[monsterVec[j]->yPos][monsterVec[j]->xPos] = '.';
+					delete monsterVec[j];
+					monsterVec[j] = NULL;
 
-	for (int i = 0; i < distance.size(); i++)
-	{
-		if (distance[i] <= 1.5) {
+					monsterVec[j] = monsterVec.back();
+					monsterVec.pop_back();
 
-			battleOutCome = battleSystem(monsterVec[i]);
-
-			switch (battleOutCome)
-			{
-			case 0:
-				map[player1->yPos][player1->xPos] = '.';
-				return 0;
-				break;
-			case 1:
-			{
-				map[monsterVec[i]->yPos][monsterVec[i]->xPos] = '.';
-				delete monsterVec[i];
-				
-				monsterVec[i] = monsterVec.back();
-				monsterVec.pop_back();
-
-				return 1;
-				break;
-			}
-			case 2:
-				return 1;
-				break;
-			default:
-				break;
+					return 1;
+					break;
+				}
+				case 2:
+					return 1;
+					break;
+				default:
+					break;
+				}
 			}
 		}
 	}
