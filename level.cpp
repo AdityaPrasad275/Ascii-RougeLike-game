@@ -246,47 +246,43 @@ int level::battleSystem(monster* _monster)
 	else return 2;
 }
 
-int level::check_if_monster_nearby()
-{
-	int deltaXpos, deltaYpos, battleOutCome;
-	std::vector<double> distance;
+int level::check_if_monster_nearby() {
+	bool isMonsterNearby = false;
 
-	for (int i = 0; i < monsterVec.size(); i++)
+	char tile[4] = { map[player1->yPos - 1][player1->xPos], map[player1->yPos + 1][player1->xPos], map[player1->yPos][player1->xPos - 1],map[player1->yPos][player1->xPos + 1] };
+	//tile = { north, south, west, east }
+
+	for (int i = 0; i < 4; i++)
 	{
-		deltaXpos = abs(player1->xPos - monsterVec[i]->xPos);
-		deltaYpos = abs(player1->yPos - monsterVec[i]->yPos);
+		for (int j = 0; j < monsterSymbols.size(); j++)
+		{
+			if (tile[i] == monsterSymbols[j]) {
 
-		distance.push_back( sqrt(pow(deltaXpos, 2) + pow(deltaYpos, 2)) );
-	} 
+				switch (battleSystem(monsterVec[j]))
+				{
+				case 0:
+					map[player1->yPos][player1->xPos] = '.';
+					return 0;
+					break;
+				case 1:
+				{
+					map[monsterVec[j]->yPos][monsterVec[j]->xPos] = '.';
+					delete monsterVec[j];
 
-	for (int i = 0; i < distance.size(); i++)
-	{
-		if (distance[i] <= 1.5) {
+					monsterVec[j] = monsterVec.back();
+					monsterVec.pop_back();
 
-			battleOutCome = battleSystem(monsterVec[i]);
+					listOfMonsterSymbols();//updating
 
-			switch (battleOutCome)
-			{
-			case 0:
-				map[player1->yPos][player1->xPos] = '.';
-				return 0;
-				break;
-			case 1:
-			{
-				map[monsterVec[i]->yPos][monsterVec[i]->xPos] = '.';
-				delete monsterVec[i];
-				
-				monsterVec[i] = monsterVec.back();
-				monsterVec.pop_back();
-
-				return 1;
-				break;
-			}
-			case 2:
-				return 1;
-				break;
-			default:
-				break;
+					return 1;
+					break;
+				}
+				case 2:
+					return 1;
+					break;
+				default:
+					break;
+				}
 			}
 		}
 	}
@@ -301,18 +297,27 @@ void level::deleteAllHeapVariables()
 	}
 }
 
+void level::listOfMonsterSymbols()
+{
+	for (int i = 0; i < monsterVec.size(); i++)
+	{
+		monsterSymbols.push_back(monsterVec[i]->symbol);
+	}
+}
+
 void level::_management(std::string _levelName)
 {
 	levelName = _levelName;
 	
 	setupLevel();
+	listOfMonsterSymbols();
 
 	bool isDone = false;
 
+	print();
+
 	while (isDone == false) {
-		
-		print();
-		
+	
 		monsterAi();
 		
 		if (move() == 1) {
@@ -320,10 +325,12 @@ void level::_management(std::string _levelName)
 			return;
 		}
 
+		print();
+
 		if (check_if_monster_nearby() == 0) {
 			isDone = true;
 		}
-		else isDone = false;
+
 	}
 
 	deleteAllHeapVariables();
