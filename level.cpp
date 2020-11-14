@@ -25,13 +25,13 @@ void level::setupLevel()
 			{
 			case '@':
 			{
-				player1->init(j, i, 100, 20, 30, 30, '@');
+				player1->init(j, i, 100, 20, 30, 70, '@');
 				break;
 			}
 			case 'g':
 			{
 				monster* goblin = new monster;
-				goblin->init(j, i, 50, 30, 50, 70, 'g', "goblin");
+				goblin->init(j, i, 50, 30, 50, 30, 'g', "goblin");
 				monsterVec.push_back(goblin);
 				break;
 			}
@@ -166,7 +166,7 @@ int level::battleSystem(monster* _monster)
 	using std::cin;
 	using std::endl;
 
-	cout << "you wanna fight or run ? Answer in 1(true) and 0(false) [once the battle starts you won'r be able to run] ";
+	cout << "you wanna fight or run ? Answer in 1(true) and 0(false) [once the battle starts you won't be able to run] ";
 	bool wannaFight = true;
 	cin >> wannaFight;
 
@@ -233,24 +233,16 @@ int level::battleSystem(monster* _monster)
 				Sleep(3000);
 			}
 		}
-
-		if (player1->health != 0) {
-			std::cout << "you won!";
-			return 1;
-		}
-		else {
-			std::cout << "you lost";
-			return 0;
-		}
 	}
 	else return 2;
 }
 
 int level::check_if_monster_nearby() {
+	
 	bool isMonsterNearby = false;
 
-	char tile[4] = { map[player1->yPos - 1][player1->xPos], map[player1->yPos + 1][player1->xPos], map[player1->yPos][player1->xPos - 1],map[player1->yPos][player1->xPos + 1] };
-	//tile = { north, south, west, east }
+	char tile[4] = { map[player1->yPos - 1][player1->xPos], map[player1->yPos + 1][player1->xPos], map[player1->yPos][player1->xPos + 1], map[player1->yPos][player1->xPos - 1] };
+	//tile = { north, south, east, west }
 
 	for (int i = 0; i < 4; i++)
 	{
@@ -270,6 +262,7 @@ int level::check_if_monster_nearby() {
 					delete monsterVec[j];
 
 					monsterVec[j] = monsterVec.back();
+					delete monster.back();					
 					monsterVec.pop_back();
 
 					listOfMonsterSymbols();//updating
